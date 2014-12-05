@@ -63,10 +63,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-javascript-constructors" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/12/04/hello-world/" class="article-date">
-  <time datetime="2014-12-04T23:18:50.000Z" itemprop="datePublished">Dec 4 2014</time>
+    <a href="/2014/12/04/javascript-constructors/" class="article-date">
+  <time datetime="2014-12-04T08:57:52.000Z" itemprop="datePublished">Dec 4 2014</time>
 </a>
     
   </div>
@@ -77,7 +77,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/04/hello-world/">Hello World</a>
+      <a class="article-title" href="/2014/12/04/javascript-constructors/">javascript-constructors</a>
     </h1>
   
 
@@ -85,29 +85,86 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">trobuleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick_Start">Quick Start</h2>
-<h3 id="Create_a_new_post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+        <p>You could always use <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create" target="_blank" rel="external"><strong>Object.create</strong></a> to create objects. But more convinient approach to create objects from shared prototype is by using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor" target="_blank" rel="external"><strong>Constructors</strong></a>.</p>
+<p>Calling any function with new keyword prepended to it causes it to be treated as constructor.An object created with new is said to be an instance of its constructor.Below is a simple constructor for rabbits. It is a convention to capitalize the names of constructors so that they are easily distinguished from other functions.</p>
+<figure class="highlight JavaScript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Rabbit</span><span class="params">(type)</span> </span>{ </div><div class="line">    <span class="keyword">this</span>.type = type;</div><div class="line">}</div><div class="line"><span class="keyword">var</span> killerRabbit = <span class="keyword">new</span> Rabbit(<span class="string">"killer"</span>); </div><div class="line"><span class="keyword">var</span> blackRabbit = <span class="keyword">new</span> Rabbit(<span class="string">"black"</span>); </div><div class="line"><span class="built_in">console</span>.log(blackRabbit.type);<span class="comment">// → black</span></div></pre></td></tr></table></figure>
 
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run_server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<p>Constructors (in fact, all functions) automatically get a property named prototype, which by default holds a plain, empty object that derives from Object.prototype. Every instance created with this constructor will have this object as its prototype. So to add a speak method to rabbits created with the Rabbit constructor, we can simply do this:</p>
+<figure class="highlight JavaScript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Rabbit.prototype.speak = <span class="function"><span class="keyword">function</span><span class="params">(line)</span> </span>{ </div><div class="line">    <span class="built_in">console</span>.log(<span class="string">"The "</span> + <span class="keyword">this</span>.type + <span class="string">" rabbit says '"</span> +line + <span class="string">"'"</span>); </div><div class="line">    blackRabbit.speak(<span class="string">"Doom..."</span>);<span class="comment">// → The black rabbit says 'Doom...'</span></div><div class="line">};</div></pre></td></tr></table></figure>
 
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate_static_files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>It is important to note the distinction between the way a prototype is associated with a constructor (through its prototype property) and the way objects have a prototype (which can be retrieved with Object. getPrototypeOf). The actual prototype of a constructor is Function.prototype since constructors are functions. Its prototype property will be the prototype of instances created through it but is not its own prototype.</p>
+<p>You can also override properties.Check snippet below:</p>
+<figure class="highlight JavaScript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Rabbit.prototype.teeth = <span class="string">"small"</span>; </div><div class="line"><span class="built_in">console</span>.log(killerRabbit.teeth);<span class="comment">// → small</span></div><div class="line">killerRabbit.teeth = <span class="string">"long, sharp, and bloody"</span>; </div><div class="line"><span class="built_in">console</span>.log(killerRabbit.teeth);<span class="comment">// → long , sharp , and bloody </span></div><div class="line"><span class="built_in">console</span>.log(blackRabbit.teeth);<span class="comment">// → small </span></div><div class="line"><span class="built_in">console</span>.log(Rabbit.prototype.teeth); <span class="comment">// → small</span></div></pre></td></tr></table></figure>
 
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+<h3 id="A_very_nice_read_here">A very nice read <a href="http://pivotallabs.com/javascript-constructors-prototypes-and-the-new-keyword/" target="_blank" rel="external">here</a></h3>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/04/hello-world/" data-id="awwy8eib3ithbq7w" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/12/04/javascript-constructors/" data-id="mmslwxqanel4r12q" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Prototyping" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/03/Prototyping/" class="article-date">
+  <time datetime="2014-12-03T21:21:00.000Z" itemprop="datePublished">Dec 3 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/03/Prototyping/">Javascript Prototyping</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>In Javascript all objects in addition to their set of properties have a default property called prototype.Let’s say you have an empty object.</p>
+<figure class="highlight JavaScript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> empty = {};</div><div class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.getPrototypeOf({}) === <span class="built_in">Object</span>.prototype); <span class="comment">//true</span></div><div class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.getPrototypeOf(<span class="built_in">Object</span>.prototype)); <span class="comment">// → null</span></div></pre></td></tr></table></figure>
+
+<p>As you expected <strong>Object.prototype</strong> returns the prototype of object.Many objects don’t directly have Object.prototype as their prototype, but instead have another object,which provides its own default properties. Functions derive from Function.prototype, and arrays derive from Array.prototype.</p>
+<figure class="highlight JavaScript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.getPrototypeOf(<span class="built_in">isNaN</span>) == <span class="built_in">Function</span>.prototype);<span class="comment">// → true</span></div><div class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.getPrototypeOf([]) == <span class="built_in">Array</span>.prototype);<span class="comment">// → true</span></div></pre></td></tr></table></figure>
+
+<p>If an object does not have a property you ask it for, it will keep looking up the prototype chain until it finds it.If the property does note exist anywhere in the chain,it will return undefined</p>
+<p><img src="../images/prototype.png" alt="prototype chain" title="Logo object prototype"><br>A new property is immediately visible to all of the objects below it in the chain once created.</p>
+<p>Use <strong>Object.create</strong> to create an object with a specific prototype.</p>
+<figure class="highlight JavaScript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> protoRabbit = { </div><div class="line">    speak: <span class="function"><span class="keyword">function</span><span class="params">(line)</span> </span>{</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">"The "</span> + <span class="keyword">this</span>.type + <span class="string">" rabbit says '"</span> + line + <span class="string">"'"</span>);</div><div class="line">    }</div><div class="line">};</div><div class="line"><span class="keyword">var</span> killerRabbit = <span class="built_in">Object</span>.create(protoRabbit);</div><div class="line">killerRabbit.type = <span class="string">"killer"</span>;</div><div class="line">killerRabbit.speak(<span class="string">"SKREEEE!"</span>);<span class="comment">// → The killer rabbit says 'SKREEEE!'</span></div></pre></td></tr></table></figure>
+
+<p>The “proto” rabbit acts as a container for the properties that are shared by all rabbits. An individual rabbit object, like the killer rabbit, contains properties that apply only to itself—in this case its type—and derives shared properties from its prototype.</p>
+<p>=================</p>
+<h2 id="hasOwnProperty">hasOwnProperty</h2>
+<p>Check code below:</p>
+<figure class="highlight JavaScript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> map = {};</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">storePhi</span><span class="params">(event , phi)</span> </span>{</div><div class="line">    map[event] = phi; </div><div class="line">}</div><div class="line">storePhi(<span class="string">"pizza"</span>, <span class="number">0.069</span>); storePhi(<span class="string">"touched tree"</span>, -<span class="number">0.081</span>);</div></pre></td></tr></table></figure>
+
+<p>We can iterate over all phi values in the object using a for/in loop and test whether a name is in there using the regular in operator. But unfortunately, the object’s prototype gets in the way.</p>
+<figure class="highlight JavaScript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Object</span>.prototype.nonsense = <span class="string">"hi"</span>; </div><div class="line"><span class="keyword">for</span> (<span class="keyword">var</span> name <span class="keyword">in</span> map)</div><div class="line">    <span class="built_in">console</span>.log(name);</div><div class="line"><span class="comment">// → pizza</span></div><div class="line"><span class="comment">// → touched tree</span></div><div class="line"><span class="comment">// → nonsense </span></div><div class="line"><span class="built_in">console</span>.log(<span class="string">"nonsense"</span> <span class="keyword">in</span> map); <span class="comment">// → true </span></div><div class="line"><span class="built_in">console</span>.log(<span class="string">"toString"</span> <span class="keyword">in</span> map); <span class="comment">// → true</span></div></pre></td></tr></table></figure>
+
+<p>That’s all wrong. There is no event called “nonsense” in our data set. And there definitely is no event called “toString”.<br>When you are worried that someone some other code you loaded into your program) might have messed with the base object prototype, I recommend you write your for/in loops like this:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (var name <span class="keyword">in</span> map) {</div><div class="line">    <span class="keyword">if</span> (map.hasOwnProperty(name)) {</div><div class="line">        // <span class="keyword">...</span> this is an own property</div><div class="line">         }</div><div class="line">    }</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>But what if hasOwnProperty in map itself is modified. Yikes!!!<br>We know that <strong>Object.create allows</strong> us to create an object with a specific prototype. You are allowed to pass null as the prototype to create a fresh object with no prototype. We want this.</p>
+<figure class="highlight JavaScript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> map = <span class="built_in">Object</span>.create(<span class="literal">null</span>); </div><div class="line">map[<span class="string">"pizza"</span>] = <span class="number">0.069</span>; </div><div class="line"><span class="built_in">console</span>.log(<span class="string">"toString"</span> <span class="keyword">in</span> map); <span class="comment">// → false</span></div><div class="line"><span class="built_in">console</span>.log(<span class="string">"pizza"</span> <span class="keyword">in</span> map); <span class="comment">// → true</span></div></pre></td></tr></table></figure>
+
+<p>Now we can safely use for/in loops, no matter what people have been doing to Object.prototype</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/12/03/Prototyping/" data-id="vghpi66jabvv9d7w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -132,7 +189,11 @@
       <ul>
         
           <li>
-            <a href="/2014/12/04/hello-world/">Hello World</a>
+            <a href="/2014/12/04/javascript-constructors/">javascript-constructors</a>
+          </li>
+        
+          <li>
+            <a href="/2014/12/03/Prototyping/">Javascript Prototyping</a>
           </li>
         
       </ul>
@@ -146,7 +207,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
